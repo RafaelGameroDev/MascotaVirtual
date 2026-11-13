@@ -115,8 +115,19 @@ public class Mascota {
         verificarMuerte();
     }
 
+    public int getExpNecesaria() {
+        return (int)((nivel + 0.5) * 100);
+    }
+
+    private void ganarExpAccionCuidado() {
+        int expGanada = Math.max(1, (int) Math.round(getExpNecesaria() * 0.05));
+        exp += expGanada;
+        System.out.println("+" + expGanada + " EXP (5% de nivel). Total EXP: " + exp + "/" + getExpNecesaria());
+        nivelChequeo();
+    }
+
     private void nivelChequeo() {
-        int expNecesaria = (int)((nivel + 0.5) * 100);
+        int expNecesaria = getExpNecesaria();
         if (exp >= expNecesaria) {
             nivel++;
             exp = 0;
@@ -166,33 +177,42 @@ public class Mascota {
 
     public void comerPoco() {
         if (!accionPermitida(1)) return;
+        if (panza >= 60) {
+            System.out.println("Tu mascota no tiene suficiente hambre (Panza al " + panza + "%). Debe estar por debajo del 60% para comer.");
+            return;
+        }
         panza = Math.min(panza + 25, 100);
         System.out.println("Le diste un snack. Panza al " + panza + "%.");
         higiene = Math.max(higiene - 5, 0);
-        exp += 5;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         verificarMuerte();
         autoGuardar();
     }
 
     public void comerMucho() {
         if (!accionPermitida(2)) return;
+        if (panza >= 60) {
+            System.out.println("Tu mascota no tiene suficiente hambre (Panza al " + panza + "%). Debe estar por debajo del 60% para comer.");
+            return;
+        }
         panza = Math.min(panza + 50, 100);
         System.out.println("Le diste un buen plato de comida. Panza al " + panza + "%.");
         higiene = Math.max(higiene - 10, 0);
-        exp += 12;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         verificarMuerte();
         autoGuardar();
     }
 
     public void comerLleno() {
         if (!accionPermitida(3)) return;
+        if (panza >= 60) {
+            System.out.println("Tu mascota no tiene suficiente hambre (Panza al " + panza + "%). Debe estar por debajo del 60% para comer.");
+            return;
+        }
         panza = 100;
         System.out.println("¡Tu mascota esta completamente llena!");
         higiene = Math.max(higiene - 15, 0);
-        exp += 25;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         verificarMuerte();
         autoGuardar();
     }
@@ -200,52 +220,64 @@ public class Mascota {
     // Acciones de juego / entrenamiento limitadas a 3 veces al día
     public void jugarPoco() {
         if (!accionPermitida(1)) return;
+        if (diversion >= 60) {
+            System.out.println("Tu mascota no quiere jugar ahora (Diversión al " + diversion + "%). Debe estar por debajo del 60% para jugar.");
+            return;
+        }
         if (!verificarLimiteEntrenamiento()) return;
 
         diversion = Math.min(diversion + 25, 100);
         cansancio = Math.max(cansancio - 15, 0);
         entrenamientosRealizadosHoy++;
         System.out.println("Jugaste un ratito (Entrenamiento " + entrenamientosRealizadosHoy + "/3). Diversion: " + diversion + "%. Energia: " + cansancio + "%.");
-        exp += 8;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         verificarMuerte();
         autoGuardar();
     }
 
     public void jugarNormal() {
         if (!accionPermitida(2)) return;
+        if (diversion >= 60) {
+            System.out.println("Tu mascota no quiere jugar ahora (Diversión al " + diversion + "%). Debe estar por debajo del 60% para jugar.");
+            return;
+        }
         if (!verificarLimiteEntrenamiento()) return;
 
         diversion = Math.min(diversion + 50, 100);
         cansancio = Math.max(cansancio - 25, 0);
         entrenamientosRealizadosHoy++;
         System.out.println("¡Buen rato de juego! (Entrenamiento " + entrenamientosRealizadosHoy + "/3). Diversion: " + diversion + "%. Energia: " + cansancio + "%.");
-        exp += 18;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         verificarMuerte();
         autoGuardar();
     }
 
     public void jugarMucho() {
         if (!accionPermitida(3)) return;
+        if (diversion >= 60) {
+            System.out.println("Tu mascota no quiere jugar ahora (Diversión al " + diversion + "%). Debe estar por debajo del 60% para jugar.");
+            return;
+        }
         if (!verificarLimiteEntrenamiento()) return;
 
         diversion = 100;
         cansancio = Math.max(cansancio - 40, 0);
         entrenamientosRealizadosHoy++;
         System.out.println("¡Sesion intensa de juego! (Entrenamiento " + entrenamientosRealizadosHoy + "/3). Diversion al maximo. Energia: " + cansancio + "%.");
-        exp += 30;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         verificarMuerte();
         autoGuardar();
     }
 
     public void descansar() {
         if (!vivo) return;
+        if (cansancio >= 60) {
+            System.out.println("Tu mascota no tiene suficiente sueño/cansancio (Energía al " + cansancio + "%). Debe estar por debajo del 60% para descansar.");
+            return;
+        }
         cansancio = 100;
         System.out.println("¡Vaya sieston! ¡Energia recuperada!");
-        exp += 5;
-        nivelChequeo();
+        ganarExpAccionCuidado();
         autoGuardar();
     }
 
@@ -306,7 +338,7 @@ public class Mascota {
         System.out.println("Salud: " + salud + "/" + saludMax + " | Panza: " + panza + "%");
         System.out.println("Diversion: " + diversion + "% | Energia: " + cansancio + "%");
         System.out.println("Higiene: " + higiene + "% | Felicidad: " + getFelicidad() + "%");
-        System.out.println("Exp: " + exp + " | Ataque: " + ataque + " | Defensa: " + defensa + " | Velocidad: " + velocidad);
+        System.out.println("Exp: " + exp + "/" + getExpNecesaria() + " | Ataque: " + ataque + " | Defensa: " + defensa + " | Velocidad: " + velocidad);
         System.out.println("Entrenamientos hoy: " + entrenamientosRealizadosHoy + "/3");
         System.out.println("=============================\n");
     }

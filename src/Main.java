@@ -131,6 +131,10 @@ public class Main {
 
             switch(opcion) {
                 case 1:
+                    if (miMascota.getPanza() >= 60) {
+                        System.out.println("Tu mascota no tiene suficiente hambre (Panza al " + miMascota.getPanza() + "%). Debe estar por debajo del 60% para comer.");
+                        break;
+                    }
                     System.out.println("1. Snack (+25 panza) [Basico]");
                     if (miMascota.getEtapaEvolutiva().equals("Aliendescente") ||
                             miMascota.getEtapaEvolutiva().equals("Alphalien")) {
@@ -146,6 +150,10 @@ public class Main {
                     else if (comida == 3) miMascota.comerLleno();
                     break;
                 case 2:
+                    if (miMascota.getDiversion() >= 60) {
+                        System.out.println("Tu mascota no quiere jugar ahora (Diversión al " + miMascota.getDiversion() + "%). Debe estar por debajo del 60% para jugar.");
+                        break;
+                    }
                     System.out.println("1. Jugar poco (+25 diversion) [Basico]");
                     if (miMascota.getEtapaEvolutiva().equals("Aliendescente") ||
                             miMascota.getEtapaEvolutiva().equals("Alphalien")) {
@@ -161,6 +169,10 @@ public class Main {
                     else if (juego == 3) miMascota.jugarMucho();
                     break;
                 case 3:
+                    if (miMascota.getCansancio() >= 60) {
+                        System.out.println("Tu mascota no tiene suficiente sueño/cansancio (Energía al " + miMascota.getCansancio() + "%). Debe estar por debajo del 60% para descansar.");
+                        break;
+                    }
                     miMascota.descansar();
                     break;
                 case 4:

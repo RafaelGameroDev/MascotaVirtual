@@ -1,7 +1,7 @@
 import java.sql.*;
 
 public class Guardado {
-    private static final String DB_URL = "jdbc:sqlite:mascota_save.db";
+    private static final String DB_URL = "jdbc:sqlite:src/BD.sqlite";
     private static Guardado instancia;
     private Connection conexion;
     private int slotActivo = 1;
